@@ -22,7 +22,7 @@ test("TANOM live-data layout, map, matching, language, planning and accessible r
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/");
+  await page.goto("/dashboard");
   await expect(
     page.getByRole("heading", { name: "Dalaguete", exact: true }),
   ).toBeVisible();
@@ -55,7 +55,7 @@ test("TANOM live-data layout, map, matching, language, planning and accessible r
   await expect(page.locator(".monthly-summaries")).toHaveCount(0);
   await page.getByRole("button", { name: "6 months", exact: true }).click();
   await expect(page.getByRole("button", {name:"6 months",exact:true})).toHaveAttribute("aria-pressed","true");
-  await page.goto("/");
+  await page.goto("/dashboard");
   await page.locator(".tanom-header .language").click();
   await expect(page.locator("html")).toHaveAttribute("lang", "ceb");
   await expect(page.locator(".heat .card-label")).toContainText("Kainit");
@@ -95,7 +95,7 @@ for (const [name, code] of [
       await page.route("**/api/environment?*", (r) =>
         r.fulfill({ json: environmentFixture(code, true) }),
       );
-      await page.goto("/");
+      await page.goto("/dashboard");
       await expect(page.locator(".soil .card-value")).toContainText(
         "Unavailable",
       );
@@ -114,7 +114,7 @@ test("weather and seasonal failures show retry without fabricated guidance", asy
   await page.route("**/api/outlook?*", (r) =>
     r.fulfill({ status: 502, json: { error: "Unavailable" } }),
   );
-  await page.goto("/");
+  await page.goto("/dashboard");
   await expect(page.getByRole("alert").first()).toContainText(
     "Weather is unavailable",
   );
@@ -132,7 +132,7 @@ test("GPS rejection leaves manual selection usable", async ({
   context,
 }) => {
   await context.clearPermissions();
-  await page.goto("/");
+  await page.goto("/dashboard");
   await page.evaluate(() =>
     Object.defineProperty(navigator, "geolocation", {
       configurable: true,
@@ -165,7 +165,7 @@ test("GPS accepts Cebu, rejects out-of-region points, and reports timeout", asyn
     longitude: 123.8854,
     accuracy: 20,
   });
-  await page.goto("/");
+  await page.goto("/dashboard");
   await page.getByRole("button", { name: "Use my location" }).click();
   await expect(page.locator(".location-heading h2")).toHaveText("Cebu City");
   await expect(page.locator(".location-heading")).toContainText("±20 m");
@@ -200,7 +200,7 @@ test("GPS accepts Cebu, rejects out-of-region points, and reports timeout", asyn
 
 test("narrow overview stacks cards beside the map", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/");
+  await page.goto("/dashboard");
   await expect(page.locator(".condition-card")).toHaveCount(4);
   for (const selector of [
     ".tanom-brand small",
@@ -254,7 +254,7 @@ test("bundled settlement dots select coordinates without a place API", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/");
+  await page.goto("/dashboard");
   const dot = page.locator(".settlement-dot").first();
   await expect(dot).toBeVisible();
   await expect(dot).toHaveAttribute("role", "button");
@@ -275,7 +275,7 @@ test("bundled settlement dots select coordinates without a place API", async ({
 test("four centered illustrated cards and simplified location panels", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/dashboard");
   await expect(page.locator(".condition-card")).toHaveCount(4);
   await expect(page.locator(".condition-art")).toHaveCount(4);
   for (const width of [1440, 800, 390]) {
@@ -293,7 +293,7 @@ test("four centered illustrated cards and simplified location panels", async ({
       ),
     ).toBe(true);
   }
-  for (const path of ["/", "/conditions", "/environment", "/planning"]) {
+  for (const path of ["/dashboard", "/conditions", "/environment", "/planning"]) {
     await page.goto(path);
     await expect(page.locator(".terrain-context")).toHaveCount(0);
     await expect(page.getByText(/Weather time:/)).toHaveCount(0);

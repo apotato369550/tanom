@@ -10,3 +10,6 @@ test-results/
 supabase/.temp/
 references/
 photos_and_logs/
+# Local design-tool runtime state
+.impeccable/hook.cache.json
+.taste-skill/

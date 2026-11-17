@@ -19,7 +19,7 @@ test.beforeEach(async ({ page }) => {
 test("province filters without changing location; national municipality and GPS sync pickers", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/dashboard");
   const location = page.locator(".location-heading h2");
   await expect(location).toHaveText("Dalaguete");
   await page
@@ -81,7 +81,7 @@ test("insights activate per exact point, load visible reports only, and reuse ea
       },
     });
   });
-  await page.goto("/");
+  await page.goto("/dashboard");
   await expect(page.locator(".condition-card")).toHaveCount(4);
   expect(requests).toHaveLength(0);
   await page
@@ -182,7 +182,7 @@ for (const [status, code, message] of [
       calls++;
       return r.fulfill({ status, json: { code } });
     });
-    await page.goto("/");
+    await page.goto("/dashboard");
     await page
       .getByRole("button", { name: "Enable AI insights", exact: true })
       .click();
@@ -190,7 +190,7 @@ for (const [status, code, message] of [
     await expect(active.getByRole("alert")).toContainText(message);
     await page.locator('.page-nav a[href="/ml"]').click();
     await expect(page.locator('[data-section="ml"]')).toBeVisible();
-    await page.locator('.page-nav a[href="/"]').click();
+    await page.locator('.page-nav a[href="/dashboard"]').click();
     await expect(page.locator('[data-section="home"]')).toBeVisible();
     await expect(active.getByRole("alert")).toContainText(message);
     expect(calls).toBe(1);
@@ -218,7 +218,7 @@ test("expired saved reports show snapshot metadata and refresh only on manual ac
       },
     });
   });
-  await page.goto("/");
+  await page.goto("/dashboard");
   await page
     .getByRole("button", { name: "Enable AI insights", exact: true })
     .click();
@@ -241,7 +241,7 @@ test("expired saved reports show snapshot metadata and refresh only on manual ac
   await expect(active.locator(".analysis-freshness")).toContainText("Expires");
   await page.locator('.page-nav a[href="/ml"]').click();
   await expect(page.locator('[data-section="ml"]')).toBeVisible();
-  await page.locator('.page-nav a[href="/"]').click();
+  await page.locator('.page-nav a[href="/dashboard"]').click();
   await expect(page.locator('[data-section="home"]')).toBeVisible();
   await expect(active.locator(".analysis-freshness")).toContainText(
     "Expired report",

@@ -1,6 +1,8 @@
-# RainWatch PH
+# TANOM · Farm weather guidance
 
-A deployable Philippine rainfall dashboard built with Next.js App Router, TypeScript, Tailwind CSS, Recharts, and Leaflet. No database, authentication, API keys, or environment variables are required.
+TANOM is a Philippine farm-weather dashboard built with Next.js App Router, TypeScript, React, Tailwind CSS, Recharts, and Leaflet. The repository and package retain the `rainwatch-ph` name.
+
+Weather, climate, and crop-context views work without accounts, API keys, or a database. Optional on-demand AI analysis requires server configuration and Supabase. The public ML page is a placeholder, not a deployed prediction service.
 
 ## Run locally
 
@@ -11,7 +13,9 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000. The server needs internet access to Open-Meteo. Forecasts are real model data; an outage shows an explicit error, never sample weather.
+Open http://localhost:3000. The server needs internet access to Open-Meteo. Provider failures produce errors or unavailable states rather than sample weather.
+
+### Verification
 
 ```bash
 npm run typecheck
@@ -19,10 +23,9 @@ npm run lint
 npm run format:check
 npm test
 npm run build
-npm start
 ```
 
-Browser integration checks use live weather and therefore require Open-Meteo availability:
+For browser checks:
 
 ```bash
 npx playwright install chromium
@@ -30,191 +33,107 @@ npm run build
 npm run test:e2e
 ```
 
-## Deploy to Vercel
+Playwright starts a separate production server on port 3100. Tests include deterministic weather fixtures, responsive layouts, accessibility checks, and retained live-provider scenarios. Only live scenarios require Open-Meteo availability; test fixtures are not production fallback data. Screenshots and other artifacts go to `test-results/`.
 
-1. Push this project to a GitHub repository.
-2. Import the repository in Vercel and select the Next.js framework preset.
-3. Use the repository root, `npm install`, and `npm run build`; keep the default output settings.
-4. Select Node.js 24.x. Leave environment variables empty and deploy.
+`npm start` serves a completed production build. `npm run format` rewrites formatting across the repository; `format:check` only checks it.
 
-The weather route runs within Next.js on Vercel. Do not use static export: `/api/weather` requires the server runtime. Building does not require weather-provider availability. No separate infrastructure is needed.
+## Current application
 
-## Observatory interface
+| Page           | Purpose                                           |
+| -------------- | ------------------------------------------------- |
+| `/`            | Current farm-weather overview                     |
+| `/conditions`  | Hourly and daily conditions                       |
+| `/planning`    | Six-month outlook and annual climate context      |
+| `/environment` | Environmental conditions and crop/climate matches |
+| `/ml`          | Coming-soon page; no ML predictions are available |
 
-The dashboard uses self-hosted IBM Plex Sans (400/500/600), supplied by `@fontsource/ibm-plex-sans` and bundled with `next/font/local`. No font service is contacted at runtime or build time. The font package includes its open font license.
+`/growing` redirects to `/environment`. The shared dashboard supports English and Cebuano, nationwide Philippine location selection through a map/list, and optional browser geolocation. Bundled municipality and province-area geometry determines supported Philippine land selections; the interface is no longer restricted to ten cities.
 
-Shared palette tokens live in `lib/design.ts` and feed the page, Recharts, and Leaflet. Body text is 16px, supporting text 14px, and peripheral labels at least 12px. Primary and secondary text colors meet a 7:1 contrast target on the three main surfaces. Essential graphical indicators and control borders meet 3:1. Severity remains labeled in words as well as color.
+### Data flow and limitations
 
-The city heading and forecast strip lead into the rainfall chart, stress explanation, and geographic overview. Below 1100px the reading order becomes chart → stress and factors → map → current and recent conditions. The forecast strip becomes two columns at 900px and below. The map uses a geographic coordinate grid and a permanent selected-city label.
+The browser requests coordinate-based Next.js routes; the server validates the location, fetches Open-Meteo data, and returns structured results:
 
-Browser checks run against a separate production server on port 3100. Deterministic dry, heavy-rain, missing-input, and outage fixtures support repeatable screenshots and axe accessibility checks; fixtures are only used by tests. Responsive checks cover 320, 390, 720, 768, and 1440 CSS pixels. The 720px check covers the layout viewport equivalent of a 1440px display at 200% zoom. Live Open-Meteo checks remain separate from the fixture scenarios. Screenshots are saved in `test-results/`.
+| Endpoint                               | Data                                                      | Provider cache                 |
+| -------------------------------------- | --------------------------------------------------------- | ------------------------------ |
+| `GET /api/environment?lat=…&lon=…`     | Current conditions, hourly series, and seven-day forecast | 10 minutes                     |
+| `GET /api/climate-profile?lat=…&lon=…` | ERA5 climate normals for 1991–2020                        | 24 hours                       |
+| `GET /api/outlook?lat=…&lon=…`         | 183-day ECMWF SEAS5 ensemble-mean outlook                 | 24 hours                       |
+| `POST /api/analysis`                   | Optional on-demand AI report                              | Shared report cache; see below |
 
-## Features and data flow
+Coordinate data routes reject unsupported/non-Philippine-land selections with 400 and report upstream failures with 502. Climate normals describe historical modeled climate, not today's observations. Seasonal ensemble means provide broad planning context, not precise daily forecasts. Weather and historical estimates are model/grid data, not local rain-gauge measurements.
 
-- Ten locally configured cities: Cebu City, Mandaue, Lapu-Lapu, Manila, Quezon City, Marikina, Davao City, Cagayan de Oro, Iloilo City, and Baguio.
-- Browser → `/api/weather?location=cebu` → cached Open-Meteo request → validated series → rainfall summary and stress score.
-- Only supported location IDs are accepted (400 otherwise). Provider errors, timeouts, invalid schemas, and incomplete rainfall return 502 with a friendly message.
-- Successful provider responses are cached server-side for 600 seconds, keyed by coordinates and current UTC hour. API responses are not browser-cached. Refresh uses the server cache; it does not force a new provider request. Active tabs refresh every ten minutes.
-- Responses include their original fetch timestamp. If a refresh fails, any previously loaded data for the same city is visibly identified as potentially stale. Switching cities never displays another city's values.
-- Leaflet loads only in the browser. Its country outline is bundled locally, so no tile provider, geocoding service, or map key is used. Zoom in to distinguish nearby cities; all cities are also available in the accessible selector. Only the selected city receives a stress color; gray markers have no loaded score.
+Crop cards use EcoCrop tolerances. Explicitly marked closest alternatives can exceed those tolerances and are not suitable-crop endorsements. Missing inputs remain unavailable rather than becoming fabricated measurements. Follow PAGASA and local authorities for official warnings; TANOM does not predict flooding.
 
-## Weather semantics
+## Deployment and optional AI
 
-Source: [Open-Meteo Forecast API documentation](https://open-meteo.com/en/docs).
+### Weather-only deployment
 
-Requested hourly variables are precipitation, rain, precipitation probability, relative humidity, surface pressure, cloud cover, wind speed, CAPE, soil moisture at 0–1 cm, and temperature. Zod validates ranges, series lengths, and continuous timestamps. Two past days and three forecast days cover the comparison and forecast windows.
+Deploy as a Next.js server application, for example on Vercel: use the repository root, `npm install`, `npm run build`, and Node.js 24.x. No environment variables or separate database are required for weather-only use. Do not use static export: the API routes require a server runtime. Building does not require live weather-provider availability.
 
-Open-Meteo precipitation is the **preceding hour's sum**. At 10:35 PHT, “current” is the modeled 09:00–10:00 total, and the next three hours sum the 10:00–13:00 intervals (end timestamps 11:00, 12:00, 13:00). The six- and 24-hour windows follow the same convention. These are hour-aligned windows, not fractional windows from the exact current minute. All displayed times explicitly use Asia/Manila, regardless of browser timezone.
+### Enable public analysis
 
-Rainfall cards use total precipitation, which includes showers; Open-Meteo's `rain` field covers large-scale rain and is displayed separately. The probability card is the maximum of 24 hourly probabilities, not the probability of rain at any time over the whole day. Peak period is the highest one-hour total, with the earliest period selected for ties; a dry forecast has no peak.
+Reports are generated on request for current conditions, conditions detail, seasonal planning, and environment context. The server reconstructs weather context rather than trusting client-supplied weather values. Selected location and modeled weather/climate/crop context are sent to OpenRouter.
 
-The previous 24-hour comparison uses modeled weather from the same forecast endpoint, not rain-gauge observations, a climatology, or a historical percentile. It provides recent context but does not enter the stress formula.
+1. Create/link a Supabase project and apply repository migrations with the Supabase CLI:
 
-## Experimental Rainfall Stress formula
+   ```bash
+   cp .env.example .env.local
+   supabase login
+   supabase link --project-ref YOUR_PROJECT_REF
+   supabase db push
+   ```
 
-For each row, clamp the normalized input to [0, 1], multiply by its weight, sum, and round to the nearest integer.
+   Public analysis requires `supabase/migrations/202611120001_public_analysis.sql` and a reachable database for shared reports, quotas, and job admission.
 
-| Input                                | Normalization         | Maximum points |
-| ------------------------------------ | --------------------- | -------------: |
-| Next 6h precipitation                | mm / 50               |             35 |
-| Next 24h precipitation               | mm / 100              |             30 |
-| Current hourly humidity              | (% − 60) / 40         |             10 |
-| Current hourly surface soil moisture | (m³/m³ − 0.10) / 0.40 |             15 |
-| Current hourly CAPE                  | J/kg / 2,500          |             10 |
+2. Configure the server using [.env.example](.env.example):
 
-Levels: Low 0–29, Moderate 30–49, Elevated 50–69, High 70–84, Extreme 85–100. Factors are ranked by their weighted contributions. The UI exposes the full formula and individual point values.
+   | Variable                      | Requirement                                                                    |
+   | ----------------------------- | ------------------------------------------------------------------------------ |
+   | `NEXT_PUBLIC_SUPABASE_URL`    | Supabase project URL                                                           |
+   | `SUPABASE_SERVICE_ROLE_KEY`   | Server-only database access; never expose it to browser code                   |
+   | `OPENROUTER_API_KEY`          | Server-only OpenRouter credential                                              |
+   | `OPENROUTER_MODEL`            | `openrouter/free` or a pinned `vendor/model:free` model only                   |
+   | `ANALYSIS_IP_HASH_SECRET`     | Random server-only secret of at least 32 characters, stable across replicas    |
+   | `ANALYSIS_IP_STRATEGY`        | Explicitly choose `single-header` or `xff`; no implicit local/public fallback  |
+   | `ANALYSIS_IP_HEADER`          | For `single-header`: lowercase header your trusted edge overwrites             |
+   | `ANALYSIS_TRUSTED_PROXY_HOPS` | For `xff`: explicit count of trusted appending proxies, counted from the right |
 
-These are illustrative, fixed thresholds, not calibrated Philippine warning criteria. Six-hour and 24-hour rainfall intentionally overlap and contribute 65% of the maximum score. Missing atmospheric inputs contribute zero without reweighting and produce an incomplete-score warning. Missing rainfall in any required forecast interval fails the request. Missing probability or recent-rainfall data is shown as unavailable.
+   Deploy behind a proxy you control and block direct origin access. Do not assume a forwarded header is trustworthy merely because it exists. `.env.example` also includes the anon key used by optional legacy integration.
 
-**Rainfall Stress is an experimental indicator and is NOT a flood prediction.** It does not model drainage, topography, rivers, tides, or local flooding. CAPE alone does not guarantee storms. Follow PAGASA and local authorities for official warnings.
+3. Optional controls: `OPENROUTER_MAX_TOKENS` defaults to 4096 (integer range 2048–16384), covering reasoning plus visible output. `OPENROUTER_REASONING_EFFORT` must be supported by the chosen model; blank preserves provider defaults. `ANALYSIS_MODEL_VERSION` defaults to `1`; change it when a model alias changes behavior to invalidate report identity.
 
-## Structure and extension points
+Only free-model routing is accepted, with no paid fallback or automatic retry. Truncated responses are rejected rather than displayed as completed guidance. Sanitized diagnostics do not log credentials, prompt contents, or reasoning text.
+
+Durable limits use UTC days: 40 attempts/site/day and 5/IP/day; minute limits are 120/site and 10/IP. At most two site jobs and one job/IP run concurrently. Failed attempts consume quota. Shared report lifetimes are six hours for current/conditions, seven days for six-month outlook, and 30 days for annual/environment reports. Keep the IP secret consistent across replicas; rotating it resets per-IP counters.
+
+## ML experiment and retained legacy functionality
+
+The standalone [Cebu Ridge experiment](ml/README.md) requires Python 3.11+, not Supabase or application credentials. It compares next-day forecast rainfall with an ERA5 modeled reference using a held-out time split. Follow that README for download, training, evaluation, and tests. It has no automatic promotion or application-ready export; the dashboard's `/ml` page remains “Coming soon.”
+
+The repository retains the original ten-city `/api/weather?location=cebu` route, rainfall aggregation/stress calculations, optional Supabase snapshot/inference plumbing, ingestion Edge Function, and `/history` verification page. These are not the main TANOM coordinate-based interface. Legacy correction failures preserve raw-forecast fallback. Historical-weather verification is a modeled proxy, not gauge truth.
+
+Legacy Rainfall Stress is a fixed experimental heuristic, not calibrated Philippine warning criteria or flood prediction. It does not model drainage, topography, rivers, or tides. Do not interpret retained integration code as evidence of an active trained model.
+
+`npm run db:seed` executes `supabase db reset` for local development; it is not a production seed command. `npm run ingest` invokes the retained `ingest-weather` function. `npm run ml:evaluate` wraps the standalone evaluation script; see its README for dataset and month prerequisites.
+
+## Repository structure
 
 ```text
-app/                 App Router page, layout, styles, and weather route
-components/          Dashboard, selector, conditions, summaries, chart, stress, map
-lib/locations.ts     Supported cities and coordinates
-lib/types.ts         Shared RainfallRisk contract
-lib/weather-schema.ts Runtime provider validation
-lib/open-meteo.ts    Server-only provider fetching and caching
-lib/rainfall.ts      Pure aggregation and scoring functions
-public/              Bundled Philippines outline
-tests/               Calculation, validation, and browser integration checks
+app/                 App Router pages, shared dashboard layout, server APIs
+components/          TANOM interface and retained rainfall-dashboard components
+lib/tanom/           Geography, weather contracts, crops, calculations, AI controls
+lib/                 Shared utilities and legacy rainfall/Supabase/ML integration
+public/              Bundled geography, licenses, and TANOM branding
+scripts/             Geography/data preparation utilities
+supabase/            Database migrations and ingestion Edge Function
+ml/                  Standalone Cebu Ridge experiment and Python tests
+tests/               TypeScript unit tests and Playwright browser scenarios
 ```
 
-Future persistence can store the shared `RainfallRisk` output without changing presentation components. A historical baseline or forecast correction can be added at the server transformation layer. Neither is implemented in this MVP.
+## Attribution
 
-## Attribution and usage
+Weather and climate data are supplied through Open-Meteo and its underlying model providers. Preserve their attribution when publishing data; review provider terms before commercial use or increased traffic.
 
-Weather data: [Open-Meteo](https://open-meteo.com/), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The free endpoint is intended for non-commercial use, with provider usage limits; review [current terms](https://open-meteo.com/en/terms) before commercial deployment or increased traffic. This portfolio MVP uses no paid API.
+Nationwide municipality/province-area geometry uses geoBoundaries gbOpen PHL ADM2/ADM3, pinned release `9469f09`, under CC BY 3.0 IGO. Source-vintage boundaries are not a current legal boundary determination. See [nationwide boundary attribution](public/philippines-boundaries-LICENSE.md), [Cebu boundary attribution](public/cebu-boundaries-LICENSE.md), and [Cebu places attribution](public/cebu-places-LICENSE.md).
 
-Country geometry: [Natural Earth](https://www.naturalearthdata.com/), public domain, 1:50m Admin 0 countries, extracted from [the Natural Earth vector dataset](https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_50m_admin_0_countries.geojson). The outline is a simplified overview, not a navigational or administrative boundary reference.
-
-## Supabase and ML extension
-
-RainWatch now optionally persists forecast snapshots and runs a forecast-correction experiment. The live weather dashboard remains available without Supabase or a trained model.
-
-### 1. Configure the project
-
-Create a Supabase project and install the [Supabase CLI](https://supabase.com/docs/guides/cli). Copy `.env.example` to `.env.local` and set the project URL, anon key, and service-role key. The service-role key must only be used by the Next.js server, CLI scripts, and Edge Function; never expose it to browser code.
-
-```bash
-cp .env.example .env.local
-supabase login
-supabase link --project-ref YOUR_PROJECT_REF
-```
-
-### 2. Apply the database migration
-
-The migration creates the five tables, indexes, uniqueness constraints, RLS defaults, and the ten supported Philippine locations. Push it from the repository root:
-
-```bash
-supabase db push
-```
-
-Verify the migration and seed in Supabase Studio under **Database → Tables**. `npm run db:seed` is intended for a local Supabase reset; it is not a production seed command.
-
-### 3. Deploy and configure ingestion
-
-Set the Edge Function's service-role secret, then deploy the function:
-
-```bash
-supabase secrets set SUPABASE_SERVICE_ROLE_KEY="YOUR_SERVICE_ROLE_KEY"
-supabase functions deploy ingest-weather
-```
-
-`SUPABASE_URL` is supplied by Supabase at runtime. Test one invocation before scheduling it:
-
-```bash
-supabase functions invoke ingest-weather
-```
-
-Create the hourly schedule in the Supabase SQL Editor. Store the project URL and publishable/anon key in Vault; do not put the service-role key in this SQL. Supabase Cron invokes the Edge Function through `pg_net`, so no Vercel Cron job is needed.
-
-### Architecture and limitations
-
-Open-Meteo feeds both the live route and the hourly Edge Function. Supabase holds forecast snapshots, later historical-weather records, model versions, and model predictions. Python trains models offline; Next.js evaluates the portable artifact server-side and falls back to raw forecasts on any failure.
-
-The rainfall target is Open-Meteo historical-weather precipitation, a modeled historical-weather proxy rather than a local rain gauge. The experiment asks whether local statistical post-processing improves selected-location rainfall error; it does not predict flooding or independently simulate weather. Rainfall Stress remains a separate raw-forecast heuristic.
-
-Example Cron setup (replace placeholders after deploying the function):
-
-```sql
-select vault.create_secret('https://PROJECT_REF.supabase.co', 'project_url');
-select vault.create_secret('SUPABASE_PUBLISHABLE_KEY', 'publishable_key');
-select cron.schedule(
-  'rainwatch-hourly-ingestion', '5 * * * *',
-  $$ select net.http_post(
-    url := (select decrypted_secret from vault.decrypted_secrets where name = 'project_url') || '/functions/v1/ingest-weather',
-    headers := jsonb_build_object('Content-Type','application/json','apikey',(select decrypted_secret from vault.decrypted_secrets where name = 'publishable_key')),
-    body := '{}'::jsonb
-  ); $$
-);
-```
-
-Check **Database → Cron → Run details** and the Edge Function logs after the first scheduled run. Re-running the function is safe: forecast snapshots, observations, and predictions use conflict-safe upserts.
-
-### 4. Train and promote a model
-
-The training workflow runs offline and needs the URL and service-role key from `.env.local` exported to the shell. It will refuse to train until at least 500 matched forecast/target rows exist.
-
-```bash
-cd ml
-python -m venv .venv
-source .venv/bin/activate             # Windows: .venv\\Scripts\\activate
-pip install -r requirements.txt
-
-export NEXT_PUBLIC_SUPABASE_URL="https://YOUR_PROJECT_REF.supabase.co"
-export SUPABASE_SERVICE_ROLE_KEY="YOUR_SERVICE_ROLE_KEY"
-python fetch_training_data.py          # writes ml/data/training.csv
-python train.py                        # writes ml/models/active-model.json/.joblib
-python evaluate.py                     # prints test comparison metrics
-python predict.py                      # uploads and activates the JSON artifact
-```
-
-Only run `predict.py` after reviewing the test metrics. It deactivates the previous model and inserts the selected model, feature contract, metrics, and portable artifact into `ml_models`; the Next.js server picks up the active version within its cache window. If no model is active, or inference fails, the dashboard continues showing raw Open-Meteo values.
-
-### Environment analysis
-
-The Environment page (`/environment`; `/growing` redirects) generates analysis only
-on request. Set server-only `OPENROUTER_API_KEY` and `OPENROUTER_MODEL` to enable
-it. Coordinates, modeled weather, historical climate and calculated crop matches
-are sent to OpenRouter. Missing climate falls back to weather-only analysis.
-Crop cards show EcoCrop tolerances; explicitly marked closest alternatives can
-exceed those tolerances and are not suitable-crop endorsements.
-
-The server uses `OPENROUTER_MAX_TOKENS=4096` by default (integer range
-2048–16384). This is a combined reasoning and visible-output budget, not a
-requested response length; the prompt asks for at most 250 words. A higher cap
-can increase cost. Truncated responses are rejected, not displayed as completed
-guidance, and are never retried automatically.
-
-Optionally set `OPENROUTER_REASONING_EFFORT` to a value supported by your chosen
-model: `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, or `max`.
-Leave it blank to preserve provider defaults. Check the model's
-`reasoning.supported_efforts` in OpenRouter's models API; mandatory-reasoning
-models must not use `none`. For output-limit failures, try a supported lower
-effort or raise the bounded output budget, then restart/reload your existing
-server configuration. Sanitized server diagnostics include completion/reasoning
-token counts when supplied by the provider, never reasoning text.
-See [OpenRouter reasoning budgets](https://openrouter.ai/docs/guides/best-practices/reasoning-tokens).
+The retained `public/philippines.geojson` overview outline derives from Natural Earth, public domain, 1:50m Admin 0 countries. Maps are contextual overviews, not navigational or legal boundary references. IBM Plex Sans is self-hosted through `@fontsource/ibm-plex-sans`; its license is included in the package.

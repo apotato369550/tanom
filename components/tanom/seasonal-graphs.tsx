@@ -1,4 +1,5 @@
 "use client";
+import { tanomColors } from "@/lib/design";
 import {
   CartesianGrid,
   Line,
@@ -57,16 +58,27 @@ export function SeasonalGraphs({
                 >
                   <CartesianGrid
                     vertical={false}
-                    stroke="#72818a"
+                    stroke={tanomColors.grid}
                     strokeDasharray="3 5"
                   />
                   <XAxis
                     dataKey="date"
                     tickFormatter={dateLabel}
                     minTickGap={20}
+                    tick={{ fill: tanomColors.secondary }}
                   />
-                  <YAxis width={64} tickCount={5} tick={{ fontSize: 12 }} />
+                  <YAxis
+                    width={64}
+                    tickCount={5}
+                    tick={{ fontSize: 12, fill: tanomColors.secondary }}
+                  />
                   <Tooltip
+                    contentStyle={{
+                      background: tanomColors.panel,
+                      borderColor: tanomColors.control,
+                      color: tanomColors.ink,
+                    }}
+                    labelStyle={{ color: tanomColors.ink }}
                     labelFormatter={(v) =>
                       dateLabel(String(v)) +
                       (rows.find((row) => row.date === String(v))?.partial
@@ -79,7 +91,9 @@ export function SeasonalGraphs({
                   <Line
                     dataKey={metric}
                     name={label + " · " + unit}
-                    stroke={metric === "heat" ? "#923e12" : "#176080"}
+                    stroke={
+                      metric === "heat" ? tanomColors.heat : tanomColors.rain
+                    }
                     strokeWidth={3}
                     dot={false}
                     connectNulls={false}

@@ -1,4 +1,5 @@
 "use client";
+import { tanomColors } from "@/lib/design";
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import type { FeatureCollection } from "geojson";
@@ -38,7 +39,7 @@ export default function TanomMap({
     map.current = instance;
     L.geoJSON(boundaries as unknown as FeatureCollection, {
       style: {
-        color: "#47758a",
+        color: tanomColors.rain,
         weight: 1.4,
         fillColor: "#e2ded0",
         fillOpacity: 0.9,
@@ -64,7 +65,7 @@ export default function TanomMap({
     settlementLayer.current = L.layerGroup().addTo(instance);
     marker.current = L.circleMarker([point.lat, point.lon], {
       radius: 8,
-      color: "#173f58",
+      color: tanomColors.ink,
       weight: 3,
       fillColor: "#eeb23c",
       fillOpacity: 1,
@@ -121,7 +122,7 @@ export default function TanomMap({
         .forEach((place) => {
           const dot = L.circleMarker([place.lat, place.lon], {
             radius: 5,
-            color: "#176080",
+            color: tanomColors.rain,
             weight: 2,
             fillColor: "#fffdf7",
             fillOpacity: 1,

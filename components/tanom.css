@@ -1,8 +1,8 @@
 .tanom {
-  --ink: #182f42;
-  --blue: #176080;
+  --ink: var(--tanom-ink);
+  --blue: var(--tanom-rain);
   --orange: #a74610;
-  --ochre: #866213;
+  --ochre: var(--tanom-heat);
   --line: #c6cfcf;
   background: transparent;
   color: var(--ink);
@@ -40,7 +40,7 @@
   justify-content: center;
   gap: 9px;
   padding: 10px 16px;
-  border: 1px solid #6f8691;
+  border: 1px solid var(--tanom-control);
   border-radius: 10px;
   background: #fffdf7;
   cursor: pointer;
@@ -57,7 +57,7 @@
   text-decoration: underline;
 }
 .tanom :focus-visible {
-  outline: 3px solid #176080;
+  outline: 3px solid var(--tanom-rain);
   outline-offset: 4px;
 }
 .tanom .skip {
@@ -119,7 +119,7 @@
   width: 44px;
   height: 26px;
   background: #d9e1e5;
-  border: 1px solid #6f8691;
+  border: 1px solid var(--tanom-control);
   border-radius: 20px;
   display: block;
   padding: 3px;
@@ -128,7 +128,7 @@
   display: block;
   width: 18px;
   height: 18px;
-  background: #173f58;
+  background: var(--tanom-ink);
   border-radius: 50%;
   transition: transform 0.2s;
 }
@@ -166,7 +166,7 @@
   color: #a74610;
 }
 .tanom .intro > div > p:last-child {
-  color: #425b68;
+  color: var(--tanom-secondary);
   max-width: 680px;
 }
 .tanom .intro-actions {
@@ -177,9 +177,9 @@
   flex-shrink: 0;
 }
 .tanom .intro-actions a {
-  background: #173f58;
-  color: #fffdf7;
-  border-color: #173f58;
+  background: var(--tanom-ink);
+  color: var(--tanom-panel);
+  border-color: var(--tanom-ink);
 }
 .tanom .intro-actions > span {
   font-size: 13px;
@@ -205,7 +205,7 @@
   display: grid;
   place-items: center;
   background: #e5edf0;
-  color: #176080;
+  color: var(--tanom-rain);
   width: 46px;
   height: 46px;
   border-radius: 50%;
@@ -237,15 +237,15 @@
   border: 1px solid;
 }
 .tanom .heat {
-  background: #fce8d8;
+  background: var(--tanom-heatSurface);
   border-color: #c9a482;
 }
 .tanom .water {
-  background: #e3eef3;
+  background: var(--tanom-infoSurface);
   border-color: #9bb8c8;
 }
 .tanom .soil {
-  background: #f2ebd1;
+  background: var(--tanom-soilSurface);
   border-color: #bfaf77;
 }
 .tanom .card-top {
@@ -255,13 +255,13 @@
   gap: 12px;
 }
 .tanom .heat .card-top {
-  color: #923e12;
+  color: var(--tanom-heat);
 }
 .tanom .water .card-top {
-  color: #176080;
+  color: var(--tanom-rain);
 }
 .tanom .soil .card-top {
-  color: #765811;
+  color: var(--tanom-soil);
 }
 .tanom .card-label {
   display: flex;
@@ -294,7 +294,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  border-top: 1px solid #182f4233;
+  border-top: 1px solid var(--tanom-ink)33;
   margin-top: 16px;
   padding-top: 14px;
   font-size: 14px;
@@ -333,12 +333,12 @@
   margin-top: 5px;
 }
 .tanom .section-title > svg {
-  color: #176080;
+  color: var(--tanom-rain);
 }
 .tanom .tanom-panel > p,
 .tanom .cropsection > p {
   font-size: 16px;
-  color: #425b68;
+  color: var(--tanom-secondary);
 }
 .tanom .chart-legend {
   display: flex;
@@ -359,7 +359,7 @@
   border-top: 3px solid #ae4811;
 }
 .tanom .chart-legend .rain-key:before {
-  border-top: 3px dashed #176080;
+  border-top: 3px dashed var(--tanom-rain);
 }
 .tanom .tanom-chart {
   height: 320px;
@@ -371,7 +371,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #425b68;
+  color: var(--tanom-secondary);
   font-size: 13px;
   margin-top: 18px;
   padding-top: 18px;
@@ -382,7 +382,7 @@
   place-items: center;
   min-height: 320px;
   text-align: center;
-  color: #4b6571;
+  color: var(--tanom-secondary);
   padding: 20px;
 }
 .tanom .chart-data {
@@ -438,7 +438,7 @@
 .tanom input,
 .tanom select {
   background: #fffdf7;
-  border: 1px solid #6f8691;
+  border: 1px solid var(--tanom-control);
   border-radius: 9px;
   min-height: 48px;
   padding: 8px 10px;
@@ -458,15 +458,15 @@
 }
 .tanom .microcopy {
   font-size: 12px !important;
-  color: #4b626d !important;
+  color: var(--tanom-secondary) !important;
   line-height: 1.6;
 }
 .tanom .checks {
   display: flex;
   align-items: center;
   gap: 20px;
-  background: #173f58;
-  color: #fffdf7;
+  background: var(--tanom-ink);
+  color: var(--tanom-panel);
   border-radius: 18px;
   padding: 26px;
   margin: 28px 0 38px;
@@ -522,19 +522,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #866213;
+  color: var(--tanom-heat);
   margin-bottom: 20px;
 }
 .tanom .crop-top span {
   font-size: 12px;
-  color: #63747c;
+  color: var(--tanom-secondary);
 }
 .tanom .crop-card h3 {
   font-size: 22px;
 }
 .tanom .crop-card > p {
   font-size: 13px;
-  color: #4b626d;
+  color: var(--tanom-secondary);
   margin-top: 7px;
 }
 .tanom .crop-card ul {
@@ -550,14 +550,14 @@
   margin: 8px 0;
 }
 .tanom .crop-card li svg {
-  color: #176080;
+  color: var(--tanom-rain);
 }
 .tanom .crop-card a {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   font-size: 13px;
-  color: #176080;
+  color: var(--tanom-rain);
   font-weight: 600;
   margin-top: 18px;
   min-height: 44px;
@@ -567,7 +567,7 @@
   align-items: flex-start;
   gap: 9px;
   font-size: 13px !important;
-  color: #425b68;
+  color: var(--tanom-secondary);
   margin-top: 18px !important;
 }
 .tanom .limitations svg {
@@ -582,12 +582,12 @@
 }
 .tanom .season-tabs button {
   font-size: 15px;
-  border-color: #9bb1bc;
+  border-color: var(--tanom-control);
 }
 .tanom .season-tabs button[aria-pressed="true"] {
-  background: #173f58;
-  color: #fffdf7;
-  border-color: #173f58;
+  background: var(--tanom-ink);
+  color: var(--tanom-panel);
+  border-color: var(--tanom-ink);
 }
 .tanom .season h3 {
   margin-bottom: 8px;
@@ -615,9 +615,9 @@
 }
 .tanom .status-note {
   padding: 14px 18px;
-  border: 1px solid #9bb1bc;
+  border: 1px solid var(--tanom-control);
   border-radius: 12px;
-  background: #eef3f4;
+  background: var(--tanom-infoSurface);
   font-size: 15px;
   margin: 14px 0;
   display: flex;
@@ -626,8 +626,9 @@
   flex-wrap: wrap;
 }
 .tanom .error-note {
-  background: #fff0d2;
-  border-color: #a98232;
+  background: var(--tanom-errorSurface);
+  border-color: var(--tanom-error);
+  color: var(--tanom-error);
 }
 .tanom .status-note button {
   font-size: 14px;
@@ -850,7 +851,7 @@
   padding: 10px 14px;
   border-bottom: 3px solid transparent;
   text-decoration: none;
-  color: #425b68;
+  color: var(--tanom-secondary);
   font-size: 15px;
   font-weight: 600;
 }
@@ -861,7 +862,7 @@
 }
 .tanom .page-nav a[aria-current="page"] {
   color: var(--blue);
-  border-bottom-color: var(--blue);
+  border-bottom-color: var(--tanom-leaf);
 }
 .tanom .page-intro {
   padding: 32px 0 24px;
@@ -874,7 +875,7 @@
 }
 .tanom .page-intro p:last-child {
   max-width: 65ch;
-  color: #425b68;
+  color: var(--tanom-secondary);
 }
 .tanom .workspace-single {
   grid-template-columns: minmax(0, 1fr);
@@ -1068,9 +1069,9 @@
   margin-bottom: 0;
 }
 .tanom .elevation {
-  background: #e7eddd;
+  background: var(--tanom-soft);
   border-color: #a6b28e;
-  color: #405436;
+  color: var(--tanom-leaf);
 }
 .tanom .card-disclaimer {
   margin: 16px 0;
@@ -1092,13 +1093,13 @@
   min-width: 0;
 }
 .tanom .condition-graph.heat {
-  background: #fce8d8;
+  background: var(--tanom-heatSurface);
 }
 .tanom .condition-graph.water {
-  background: #e3eef3;
+  background: var(--tanom-infoSurface);
 }
 .tanom .condition-graph.soil {
-  background: #f2ebd1;
+  background: var(--tanom-soilSurface);
 }
 @media (min-width: 761px) and (max-width: 1199px) {
   .tanom .workspace:has(.conditions-stack) {
@@ -1173,13 +1174,13 @@
   color: inherit;
 }
 .tanom .condition-tabs button[aria-selected="true"] {
-  background: #182f42;
-  color: #fffdf7;
-  border-color: #182f42;
+  background: var(--tanom-ink);
+  color: var(--tanom-panel);
+  border-color: var(--tanom-ink);
 }
 .tanom .condition-tabs button:focus-visible,
 .tanom .condition-plot-panel:focus-visible {
-  outline: 3px solid #176080;
+  outline: 3px solid var(--tanom-rain);
   outline-offset: 3px;
 }
 .tanom .condition-plot-panel {
@@ -1320,7 +1321,7 @@
 .tanom .crop-title-card p {
   margin: 12px 0 0;
   font-size: 16px;
-  color: #425b68;
+  color: var(--tanom-secondary);
 }
 .tanom .environment-panel .crop-grid {
   margin-top: 12px;
@@ -1461,34 +1462,92 @@
   gap: 24px;
   align-items: start;
 }
-.tanom .dashboard-panels, .tanom .dashboard-panel { min-width: 0; }
-.tanom .dashboard-panel[hidden] { display: none; }
-.tanom .dashboard-panel:not([hidden]) { animation: dashboard-enter 200ms ease-out; }
-.tanom .dashboard-location { position: sticky; top: 24px; min-width: 0; }
-.tanom .dashboard-location .map-panel { height: auto; margin: 0; }
-.tanom .dashboard-location .cebu-map { height: clamp(240px, 40dvh, 400px); min-height: 0; }
-.tanom .environment-panel > * + * { margin-top: 24px; }
-.tanom .environment-panel .crop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.tanom .dashboard-panels,
+.tanom .dashboard-panel {
+  min-width: 0;
+}
+.tanom .dashboard-panel[hidden] {
+  display: none;
+}
+.tanom .dashboard-panel:not([hidden]) {
+  animation: dashboard-enter 200ms ease-out;
+}
+.tanom .dashboard-location {
+  position: sticky;
+  top: 24px;
+  min-width: 0;
+}
+.tanom .dashboard-location .map-panel {
+  height: auto;
+  margin: 0;
+}
+.tanom .dashboard-location .cebu-map {
+  height: clamp(240px, 40dvh, 400px);
+  min-height: 0;
+}
+.tanom .environment-panel > * + * {
+  margin-top: 24px;
+}
+.tanom .environment-panel .crop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
 @keyframes dashboard-enter {
-  from { opacity: 0; transform: translateX(12px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @media (max-width: 1199px) {
-  .tanom .dashboard-layout { grid-template-columns: minmax(0, 1fr); }
-  .tanom .dashboard-location { position: static; grid-row: 1; }
-  .tanom .dashboard-location .cebu-map { height: 280px; }
+  .tanom .dashboard-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tanom .dashboard-location {
+    position: static;
+    grid-row: 1;
+  }
+  .tanom .dashboard-location .cebu-map {
+    height: 280px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tanom .dashboard-panel:not([hidden]) { animation: none; }
+  .tanom .dashboard-panel:not([hidden]) {
+    animation: none;
+  }
 }
-.tanom .dashboard-panel .conditions-stack { height: auto; }
-.tanom .dashboard-panel .conditions-stack .tanom-chart { height: 320px; flex: none; }
-.tanom .dashboard-panel > .analysis-panel { margin-top: 24px; }
-.tanom .conditions-stack > .analysis-panel { margin-top: 14px; }
-.tanom .seasonal-graphs { display: grid; gap: 24px; margin-top: 24px; }
-.tanom .seasonal-graphs .condition-graph { margin: 0; }
-.tanom .seasonal-graphs .tanom-chart { height: 280px; }
-.tanom .dashboard-panel .conditions-stack { display: flex; flex-direction: column; }
+.tanom .dashboard-panel .conditions-stack {
+  height: auto;
+}
+.tanom .dashboard-panel .conditions-stack .tanom-chart {
+  height: 320px;
+  flex: none;
+}
+.tanom .dashboard-panel > .analysis-panel {
+  margin-top: 24px;
+}
+.tanom .conditions-stack > .analysis-panel {
+  margin-top: 14px;
+}
+.tanom .seasonal-graphs {
+  display: grid;
+  gap: 24px;
+  margin-top: 24px;
+}
+.tanom .seasonal-graphs .condition-graph {
+  margin: 0;
+}
+.tanom .seasonal-graphs .tanom-chart {
+  height: 280px;
+}
+.tanom .dashboard-panel .conditions-stack {
+  display: flex;
+  flex-direction: column;
+}
 
 /* Reports keep the dashboard's typography, with readable prose rather than raw markdown. */
 .tanom .analysis-panel .analysis-content,
@@ -1571,7 +1630,7 @@
   box-shadow: 0 3px 0 #45604433;
 }
 .tanom .crop-carousel-track:focus-visible {
-  outline: 3px solid #176080;
+  outline: 3px solid var(--tanom-rain);
   outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1579,18 +1638,232 @@
     scroll-behavior: auto;
   }
 }
-.tanom .page-intro { display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; }
-.tanom .insights-control { margin:0; max-width:390px; }
-.tanom .insights-control button { display:flex; align-items:center; gap:12px; background:transparent; border:0; }
-.tanom .ai-switch-track { width:48px; height:28px; border-radius:20px; background:#647785; padding:4px; display:inline-block; }
-.tanom .ai-switch-track span { display:block; width:20px; height:20px; border-radius:50%; background:white; }
-.tanom [aria-checked="true"] .ai-switch-track { background:#176b91; }
-.tanom [aria-checked="true"] .ai-switch-track span { transform:translateX(20px); }
-.tanom .crop-carousel { position:relative; padding-inline:48px; }
-.tanom .crop-carousel-track { gap:12px; scrollbar-width:none; padding:4px 0 10px; }
-.tanom .crop-carousel-track::-webkit-scrollbar { display:none; }
-.tanom .crop-carousel-slide { flex:0 0 min(280px, 100%); }
-.tanom .crop-carousel-slide .crop-card { width:100%; margin:0; }
-.tanom .crop-prev, .tanom .crop-next { position:absolute; top:45%; width:40px; min-height:44px; padding:0; }
-.tanom .crop-prev { left:0; }
-.tanom .crop-next { right:0; }
+.tanom .page-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.tanom .insights-control {
+  margin: 0;
+  max-width: 390px;
+}
+.tanom .insights-control button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: 0;
+}
+.tanom .ai-switch-track {
+  width: 48px;
+  height: 28px;
+  border-radius: 20px;
+  background: #647785;
+  padding: 4px;
+  display: inline-block;
+}
+.tanom .ai-switch-track span {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+}
+.tanom [aria-checked="true"] .ai-switch-track {
+  background: var(--tanom-leaf);
+}
+.tanom [aria-checked="true"] .ai-switch-track span {
+  transform: translateX(20px);
+}
+.tanom .crop-carousel {
+  position: relative;
+  padding-inline: 48px;
+}
+.tanom .crop-carousel-track {
+  gap: 12px;
+  scrollbar-width: none;
+  padding: 4px 0 10px;
+}
+.tanom .crop-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+.tanom .crop-carousel-slide {
+  flex: 0 0 min(280px, 100%);
+}
+.tanom .crop-carousel-slide .crop-card {
+  width: 100%;
+  margin: 0;
+}
+.tanom .crop-prev,
+.tanom .crop-next {
+  position: absolute;
+  top: 45%;
+  width: 40px;
+  min-height: 44px;
+  padding: 0;
+}
+.tanom .crop-prev {
+  left: 0;
+}
+.tanom .crop-next {
+  right: 0;
+}
+
+/* Grower interface: quiet surfaces, clear weather hierarchy. */
+.tanom {
+  --ink: var(--tanom-ink);
+  --blue: var(--tanom-rain);
+  --line: var(--tanom-border);
+  background: var(--tanom-surface);
+}
+.tanom .tanom-header {
+  background: var(--tanom-surface);
+}
+.tanom .page-nav {
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+.tanom .page-nav a[aria-current="page"] {
+  color: var(--tanom-ink);
+  border-color: var(--tanom-leaf);
+  background: var(--tanom-soft);
+}
+.tanom .page-intro {
+  padding-block: 28px;
+}
+.tanom .page-intro h1 {
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+.tanom .tanom-panel {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: none;
+}
+.tanom .condition-graph {
+  background: white;
+  padding: 24px;
+}
+.tanom .condition-graph h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+.tanom .condition-art {
+  max-width: 90px;
+}
+.tanom button {
+  border-radius: 6px;
+  background: #fff;
+  border-color: var(--tanom-control);
+}
+.tanom button:hover {
+  background: var(--tanom-soft);
+}
+.tanom .insights-control {
+  max-width: 440px;
+}
+.tanom .insights-control p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tanom-secondary);
+}
+.tanom .tanom-footer {
+  border-top: 1px solid var(--line);
+  background: #edf1e7;
+}
+.tanom .limitations {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--tanom-secondary);
+}
+.tanom .tanom-chart {
+  font-variant-numeric: tabular-nums;
+}
+.tanom .crop-title-card {
+  background: #e9efdf;
+  box-shadow: none;
+}
+@media (max-width: 760px) {
+  .tanom .condition-graph {
+    padding: 16px;
+  }
+  .tanom .insights-control {
+    max-width: 100%;
+  }
+}
+.tanom .planning-context {
+  padding: 14px 18px;
+  background: var(--tanom-soft);
+  margin-block: 20px;
+  font-size: 15px;
+}
+.tanom .season-tabs button[aria-pressed="true"] {
+  background: var(--tanom-ink);
+  color: white;
+}
+.tanom .dashboard-panel[data-section="home"] > .insights-control {
+  margin-block: 24px;
+  padding: 20px;
+  border-top: 1px solid var(--line);
+}
+.tanom .condition-card {
+  border-radius: 10px;
+  border: 1px solid var(--tanom-border);
+  box-shadow: none;
+  background: white;
+  padding: 24px;
+}
+.tanom .condition-card.heat {
+  border-top: 3px solid #94621d;
+}
+.tanom .condition-card.water {
+  border-top: 3px solid var(--tanom-rain);
+}
+.tanom .condition-card.soil {
+  border-top: 3px solid var(--tanom-leaf);
+}
+.tanom .condition-card.elevation {
+  border-top: 3px solid #8b8067;
+}
+.tanom .card-value {
+  color: var(--tanom-ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+}
+.tanom .card-label {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.tanom .card-subtitle {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--tanom-secondary);
+}
+
+/* Color roles: leaf selects; water informs; heat/soil identify measurements. */
+.tanom .page-nav a { color: var(--tanom-secondary); }
+.tanom .page-nav a[aria-current="page"] { color: var(--tanom-ink); border-bottom-color:var(--tanom-leaf); }
+.tanom .condition-tabs button[aria-selected="true"],
+.tanom .season-tabs button[aria-pressed="true"] {
+  background:var(--tanom-ink); color:var(--tanom-panel); border-color:var(--tanom-ink);
+}
+.tanom .condition-tabs button:hover:not([aria-selected="true"]),
+.tanom .season-tabs button:hover:not([aria-pressed="true"]) { background:var(--tanom-soft); }
+.tanom .condition-card.heat { border-top-color:var(--tanom-heat); }
+.tanom .condition-card.water { border-top-color:var(--tanom-rain); }
+.tanom .condition-card.soil { border-top-color:var(--tanom-soil); }
+.tanom .status-note { color:var(--tanom-rain); border-color:var(--tanom-rain); }
+.tanom .status-note.error-note, .tanom .analysis-panel [role="alert"] {
+  color:var(--tanom-error); background:var(--tanom-errorSurface); border:1px solid var(--tanom-error);
+}
+.tanom .analysis-panel [role="alert"] { padding:16px; border-radius:8px; }
+.tanom .limitations { color:var(--tanom-warning); }
+.tanom :focus-visible { outline-color:var(--tanom-rain); }
+.tanom input, .tanom select { border-color:var(--tanom-control); color:var(--tanom-ink); background:var(--tanom-panel); }
+.tanom input::placeholder { color:var(--tanom-secondary); opacity:1; }
+.tanom button:disabled { opacity:1; color:var(--tanom-secondary); background:var(--tanom-soft); border-color:var(--tanom-control); }

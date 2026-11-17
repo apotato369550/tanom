@@ -1,0 +1,18 @@
+{
+  "buildPath": "code",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "app/globals.css"
+        ],
+        "createdAt": "2026-11-17T04:55:06.529Z",
+        "reason": "Agent review: existing .error rule uses an amber edge as a semantic error-state indicator, not a decorative card accent; retain error differentiation."
+      }
+    ]
+  }
+}

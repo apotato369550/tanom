@@ -1,4 +1,5 @@
 "use client";
+import { tanomColors } from "@/lib/design";
 import { useId, useRef, useState } from "react";
 import {
   CartesianGrid,
@@ -55,14 +56,14 @@ export function Conditions({
         "Temperatura",
       ),
       unit: "°C",
-      color: "#923e12",
+      color: tanomColors.heat,
       theme: "heat",
     },
     {
       key: "rainfall",
       title: t("Rainfall", "Ulan"),
       unit: "mm",
-      color: "#176080",
+      color: tanomColors.rain,
       theme: "water",
     },
     {
@@ -72,7 +73,7 @@ export function Conditions({
         "Kaumog sa nawong sa yuta",
       ),
       unit: "m³/m³",
-      color: "#765811",
+      color: tanomColors.soil,
       theme: "soil",
     },
   ] as const;
@@ -163,20 +164,21 @@ export function Conditions({
                   >
                     <CartesianGrid
                       vertical={false}
-                      stroke="#72818a"
+                      stroke={tanomColors.grid}
                       strokeDasharray="3 5"
                     />
                     <XAxis
                       dataKey="time"
                       tickFormatter={(v) => dateLabel(v)}
                       minTickGap={20}
+                      tick={{ fill: tanomColors.secondary }}
                     />
                     <YAxis
                       yAxisId="selected"
                       width={64}
                       tickCount={5}
                       minTickGap={16}
-                      tick={{ fontSize: 12 }}
+                      tick={{ fontSize: 12, fill: tanomColors.secondary }}
                       tickFormatter={(value: number) =>
                         Number(
                           value.toFixed(s.key === "soil" ? 3 : 1),
@@ -184,6 +186,12 @@ export function Conditions({
                       }
                     />
                     <Tooltip
+                      contentStyle={{
+                        background: tanomColors.panel,
+                        borderColor: tanomColors.control,
+                        color: tanomColors.ink,
+                      }}
+                      labelStyle={{ color: tanomColors.ink }}
                       labelFormatter={(v) => dateLabel(String(v), true)}
                     />
                     <Line

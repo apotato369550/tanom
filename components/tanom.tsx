@@ -20,6 +20,8 @@ import {
 } from "@/lib/tanom/analysis-contract";
 import { seasonalRows } from "@/lib/tanom/view-data";
 import "./tanom.css";
+import { TanomMark } from "./tanom-mark";
+import { LanguageSwitch } from "./language-switch";
 import { ConditionCards } from "./tanom/condition-cards";
 import { Analysis, type AnalysisCache } from "./tanom/analysis";
 import Link from "next/link";
@@ -27,7 +29,7 @@ import { usePathname } from "next/navigation";
 import { CropCarousel } from "./tanom/crop-carousel";
 type DashboardSection = "home" | "conditions" | "growing" | "planning" | "ml";
 const sections: Record<string, DashboardSection> = {
-  "/": "home",
+  "/dashboard": "home",
   "/conditions": "conditions",
   "/environment": "growing",
   "/planning": "planning",
@@ -36,6 +38,13 @@ const sections: Record<string, DashboardSection> = {
 export function Tanom() {
   const page = sections[usePathname()] ?? "home";
   const [ceb, setCeb] = useState(false);
+  useEffect(() => {
+    const timer = window.setTimeout(
+      () => setCeb(localStorage.getItem("tanom-language") === "ceb"),
+      0,
+    );
+    return () => window.clearTimeout(timer);
+  }, []);
   const [point, setPoint] = useState<Point>(defaultPoint);
   const [gpsState, setGpsState] = useState<
     "idle" | "loading" | "denied" | "outside" | "timeout" | "unavailable"
@@ -162,49 +171,18 @@ export function Tanom() {
         {t("Skip to content", "Adto sa sulod")}
       </a>
       <header className="tanom-header">
-        <a href="#farm" className="tanom-brand" aria-label="TANOM home">
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 64 64"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M18 18a14 14 0 0 1 28 0"
-              stroke="#B44F13"
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-            <path
-              d="M6 25h52M12 34h40M19 43h26"
-              stroke="#936B17"
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-            <path
-              d="M32 25v19c0 8-9 9-9 15"
-              stroke="#176080"
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-          </svg>
+        <Link href="/" className="tanom-brand" aria-label="TANOM home">
+          <TanomMark size={48} />
           <span>TANOM</span>
-        </a>
+        </Link>
         <div className="header-right">
-          <button
-            className="language"
-            role="switch"
-            aria-label="Cebuano"
-            aria-checked={ceb}
-            onClick={() => setCeb(!ceb)}
-          >
-            <span lang="en">EN</span>
-            <span className="switch-track">
-              <span className="switch-thumb" />
-            </span>
-            <span lang="ceb">CEB</span>
-          </button>
+          <LanguageSwitch
+            ceb={ceb}
+            onChange={(value) => {
+              localStorage.setItem("tanom-language", value ? "ceb" : "en");
+              setCeb(value);
+            }}
+          />
         </div>
       </header>
       <nav
@@ -213,7 +191,7 @@ export function Tanom() {
       >
         <div>
           {[
-            ["/", "home", t("Dashboard", "Dashboard")],
+            ["/dashboard", "home", t("Dashboard", "Dashboard")],
             ["/conditions", "conditions", t("Conditions", "Kondisyon")],
             ["/environment", "growing", t("Environment", "Palibot")],
             [
@@ -252,31 +230,30 @@ export function Tanom() {
                         )}
             </h1>
           </div>
-            <section
-              className="insights-control"
-              aria-label={t(
-                "AI insights controls",
-                "Mga kontrol sa AI insights",
-              )}
-            >
-              <button
-                role="switch"
-                aria-checked={insightsEnabled}
-                onClick={() =>
-                  setEnabledPoint(insightsEnabled ? null : pointKey)
-                }
-              >
-                <span className="ai-switch-track" aria-hidden="true"><span /></span>
-                {t("Enable AI insights", "I-enable ang AI insights")}
-              </button>
-              <p>
-                {t(
-                  "For this exact point only. Coordinates and modeled data are sent to OpenRouter when you open a report tab. Not a field assessment.",
-                  "Alang lang niining eksaktong punto. Ipadala ang lokasyon ug datos sa OpenRouter kon ablihan ang report tab. Dili kini pagtimbang sa uma.",
-                )}
-              </p>
-            </section>
         </section>
+        {page !== "home" && (
+          <section
+            className="insights-control"
+            aria-label={t("AI insights controls", "Mga kontrol sa AI insights")}
+          >
+            <button
+              role="switch"
+              aria-checked={insightsEnabled}
+              onClick={() => setEnabledPoint(insightsEnabled ? null : pointKey)}
+            >
+              <span className="ai-switch-track" aria-hidden="true">
+                <span />
+              </span>
+              {t("Enable AI insights", "I-enable ang AI insights")}
+            </button>
+            <p>
+              {t(
+                "For this exact point only. Coordinates and modeled data are sent to OpenRouter when you open a report tab. Not a field assessment.",
+                "Alang lang niining eksaktong punto. Ipadala ang lokasyon ug datos sa OpenRouter kon ablihan ang report tab. Dili kini pagtimbang sa uma.",
+              )}
+            </p>
+          </section>
+        )}
         {environment.loading && (
           <p className="status-note" role="status">
             {t(
@@ -313,6 +290,32 @@ export function Tanom() {
               data-section="home"
             >
               <ConditionCards data={data} ceb={ceb} />
+              <section
+                className="insights-control"
+                aria-label={t(
+                  "AI insights controls",
+                  "Mga kontrol sa AI insights",
+                )}
+              >
+                <button
+                  role="switch"
+                  aria-checked={insightsEnabled}
+                  onClick={() =>
+                    setEnabledPoint(insightsEnabled ? null : pointKey)
+                  }
+                >
+                  <span className="ai-switch-track" aria-hidden="true">
+                    <span />
+                  </span>
+                  {t("Enable AI insights", "I-enable ang AI insights")}
+                </button>
+                <p>
+                  {t(
+                    "For this exact point only. Coordinates and modeled data are sent to OpenRouter when you open a report tab. Not a field assessment.",
+                    "Alang lang niining eksaktong punto. Ipadala ang lokasyon ug datos sa OpenRouter kon ablihan ang report tab. Dili kini pagtimbang sa uma.",
+                  )}
+                </p>
+              </section>
               <Analysis
                 enabled={insightsEnabled}
                 active={page === "home"}
@@ -472,6 +475,17 @@ export function Tanom() {
                     </button>
                   </div>
                 )}
+                <p className="planning-context">
+                  {tab === "annual"
+                    ? t(
+                        "1991–2020 historical climate · modeled typical conditions, not a forecast.",
+                        "Klima sa 1991–2020 · kasagarang kondisyon, dili forecast.",
+                      )
+                    : t(
+                        "Six-month ensemble outlook · broad seasonal context, not precise daily weather.",
+                        "Unom ka bulan nga panglantaw · giya sa panahon, dili tukmang forecast matag adlaw.",
+                      )}
+                </p>
                 {months.length > 0 && (
                   <>
                     <SeasonalGraphs rows={months} ceb={ceb} />
@@ -523,36 +537,10 @@ export function Tanom() {
               accuracy={accuracy}
               ceb={ceb}
             />
-
           </aside>
         </div>
         <footer className="tanom-footer">
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 64 64"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M18 18a14 14 0 0 1 28 0"
-              stroke="#B44F13"
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-            <path
-              d="M6 25h52M12 34h40M19 43h26"
-              stroke="#936B17"
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-            <path
-              d="M32 25v19c0 8-9 9-9 15"
-              stroke="#176080"
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-          </svg>
+          <TanomMark size={40} />
           <span>TANOM</span>
         </footer>
       </main>

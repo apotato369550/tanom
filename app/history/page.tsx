@@ -58,7 +58,7 @@ export default function HistoryPage() {
               ))}
             </select>
           </label>
-          <Link className="refresh" href="/" aria-label="Back to dashboard">
+          <Link className="refresh" href="/dashboard" aria-label="Back to dashboard">
             ←
           </Link>
         </div>

@@ -1284,3 +1284,61 @@ footer a,
 }
 .weather-nature { position:absolute; inset:0; width:100%; height:auto; opacity:.45; }
 @media(max-width:640px) { .weather-nature { width:850px; max-width:none; left:-40px; opacity:.3; } }
+
+/* Shared TANOM interface semantics: field, rain, and readable controls. */
+
+.landing button,
+.landing input,
+.landing select {
+  font: inherit;
+}
+.tanom-mark {
+  flex: 0 0 auto;
+}
+.landing .language-switch,
+.tanom button.language-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  min-height: 44px;
+  border: 1px solid var(--tanom-leaf);
+  border-radius: 7px;
+  background: var(--tanom-panel);
+  color: var(--tanom-ink);
+  font: 500 14px/1.2 var(--font-sans);
+  cursor: pointer;
+}
+.language-switch span {
+  padding: 10px 9px;
+  border-radius: 4px;
+}
+.language-switch span[data-selected="true"] {
+  background: var(--tanom-ink);
+  color: white;
+}
+.landing .language-switch:hover,
+.tanom button.language-switch:hover {
+  background: var(--tanom-soft);
+}
+.language-switch:active {
+  transform: translateY(1px);
+}
+.language-switch:focus-visible {
+  outline: 3px solid var(--tanom-rain);
+  outline-offset: 4px;
+}
+.landing ::selection,
+.tanom ::selection {
+  background: #d6e5c7;
+  color: var(--tanom-ink);
+}
+.landing input,
+.tanom input {
+  caret-color: var(--tanom-leaf);
+}
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}

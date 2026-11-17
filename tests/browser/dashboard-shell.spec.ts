@@ -18,14 +18,14 @@ test("navigation preserves one map, state, sizing and lazily enabled resources",
     return r.fulfill({ json: climateFixture });
   });
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/");
+  await page.goto("/dashboard");
   const map = page.locator(".map-panel");
   await expect(page.locator(".leaflet-container")).toBeVisible();
   const node = await map.elementHandle();
   const before = await map.boundingBox();
   expect(climateCalls).toBe(0);
   expect(outlookCalls).toBe(0);
-  for (const href of ["/conditions", "/environment", "/planning", "/ml", "/"]) {
+  for (const href of ["/conditions", "/environment", "/planning", "/ml", "/dashboard"]) {
     await page.locator(`.page-nav a[href="${href}"]`).click();
     await expect(page).toHaveURL(href === "/" ? /\/$/ : new RegExp(href + "$"));
     expect(
