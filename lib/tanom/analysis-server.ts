@@ -90,7 +90,12 @@ export function visitorHash(headers: Headers) {
   if (!secret || secret.length < 32)
     throw new Error("Missing IP hashing configuration");
   let ip: string;
-  if (strategy === "single-header") {
+  if (strategy === "local-dev") {
+    if (process.env.NODE_ENV !== "development")
+      throw new Error("Local identity requires development mode");
+    // All local requests share one quota; forwarded headers are ignored.
+    ip = "127.0.0.1";
+  } else if (strategy === "single-header") {
     const name = process.env.ANALYSIS_IP_HEADER;
     if (!name || !/^[a-z0-9-]+$/.test(name))
       throw new Error("Missing trusted header configuration");

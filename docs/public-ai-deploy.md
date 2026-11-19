@@ -14,6 +14,8 @@ Run unit checks with `npm test`; run the transaction/permission checks in `tests
 
 There is no default strategy, no cookie exemption, and no client-provided visitor identifier. Missing/invalid identity fails closed even on cache reads.
 
+For direct localhost development, set `ANALYSIS_IP_STRATEGY=local-dev` and a generated `ANALYSIS_IP_HASH_SECRET` (use `openssl rand -hex 32`) in `.env.local`, then restart `npm run dev`. No proxy header/hop settings are needed. This explicit mode only works with `NODE_ENV=development`, ignores forwarded headers, and hashes a fixed loopback identity, so all local requests share a visitor quota. It is not for publicly exposed development servers. Production/test reject it; production must use one of the trusted proxy strategies below. Supabase storage, quotas and provider configuration are still required.
+
 - `single-header`: set `ANALYSIS_IP_HEADER` to the lowercase header your trusted edge **overwrites** with the peer IP. Lists, ports, hostnames and malformed IPs are rejected.
 - `xff`: set `ANALYSIS_TRUSTED_PROXY_HOPS` to your fixed trusted append-only proxy chain length (1–10). The identity is taken from that many positions from the right of `X-Forwarded-For`, not the attacker-controlled leftmost value. Each trusted proxy must append the true peer address; deployments that replace rather than append XFF need a different strategy.
 - Block direct origin access and routes bypassing the trusted chain. A generic Next.js Request cannot establish which network peer supplied a header; incorrectly trusting a public header defeats IP quotas. Do not use these example header names without validating the actual hosting/proxy behavior. Variable path lengths require an overwriting edge header instead.

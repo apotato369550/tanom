@@ -116,6 +116,34 @@ test("server report selection, free model and IP boundary", () => {
   }
 });
 
+test("local identity is explicit, development-only and still requires a secret", () => {
+  const saved = { ...process.env };
+  try {
+    process.env = { ...process.env, NODE_ENV: "development",
+      ANALYSIS_IP_STRATEGY: "local-dev", ANALYSIS_IP_HASH_SECRET: "a".repeat(32) };
+    const local = visitorHash(new Headers());
+    assert.equal(local.length, 64);
+    assert.equal(local, visitorHash(new Headers({
+      "x-forwarded-for": "192.0.2.1", "x-real-ip": "invalid",
+    })));
+    process.env.ANALYSIS_IP_STRATEGY = "single-header";
+    process.env.ANALYSIS_IP_HEADER = "x-real-ip";
+    assert.equal(local, visitorHash(new Headers({ "x-real-ip": "127.0.0.1" })));
+    process.env.ANALYSIS_IP_STRATEGY = "local-dev";
+    for (const secret of ["", "short"]) {
+      process.env.ANALYSIS_IP_HASH_SECRET = secret;
+      assert.throws(() => visitorHash(new Headers()));
+    }
+    process.env.ANALYSIS_IP_HASH_SECRET = "a".repeat(32);
+    for (const mode of ["production", "test"] as const) {
+      process.env = { ...process.env, NODE_ENV: mode };
+      assert.throws(() => visitorHash(new Headers()));
+    }
+  } finally {
+    process.env = saved;
+  }
+});
+
 test("public analysis uses durable admission and authoritative provider snapshots", async (t) => {
   const env = { ...process.env };
   const originalFetch = globalThis.fetch,
