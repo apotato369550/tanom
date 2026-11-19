@@ -25,6 +25,7 @@ export function Conditions({
   insightsEnabled,
   active,
   analysisCache,
+  onToggleInsights,
 }: {
   data: Environment | null;
   ceb: boolean;
@@ -32,6 +33,7 @@ export function Conditions({
   insightsEnabled: boolean;
   active: boolean;
   analysisCache: AnalysisCache;
+  onToggleInsights: () => void;
 }) {
   const [hourly, setHourly] = useState(false);
   const [selected, setSelected] = useState(0);
@@ -93,6 +95,15 @@ export function Conditions({
   );
   return (
     <div ref={stackRef} className="conditions-stack">
+      <Analysis
+        request={request}
+        ceb={ceb}
+        enabled={insightsEnabled}
+        onToggle={onToggleInsights}
+        active={active}
+        cache={analysisCache}
+        title={t("Next 24 hours overview", "Kinatibuk-ang sunod 24 oras")}
+      />
       <section className="tanom-panel">
         <div className="conditions-title-row">
           <h2>{t("Your conditions", "Kondisyon sa imong lugar")}</h2>
@@ -224,14 +235,6 @@ export function Conditions({
           )}
         </div>
       </section>
-      <Analysis
-        request={request}
-        ceb={ceb}
-        enabled={insightsEnabled}
-        active={active}
-        cache={analysisCache}
-        title={t("Next 24 hours overview", "Kinatibuk-ang sunod 24 oras")}
-      />
     </div>
   );
 }

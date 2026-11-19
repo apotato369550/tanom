@@ -231,29 +231,6 @@ export function Tanom() {
             </h1>
           </div>
         </section>
-        {page !== "home" && (
-          <section
-            className="insights-control"
-            aria-label={t("AI insights controls", "Mga kontrol sa AI insights")}
-          >
-            <button
-              role="switch"
-              aria-checked={insightsEnabled}
-              onClick={() => setEnabledPoint(insightsEnabled ? null : pointKey)}
-            >
-              <span className="ai-switch-track" aria-hidden="true">
-                <span />
-              </span>
-              {t("Enable AI insights", "I-enable ang AI insights")}
-            </button>
-            <p>
-              {t(
-                "For this exact point only. Coordinates and modeled data are sent to OpenRouter when you open a report tab. Not a field assessment.",
-                "Alang lang niining eksaktong punto. Ipadala ang lokasyon ug datos sa OpenRouter kon ablihan ang report tab. Dili kini pagtimbang sa uma.",
-              )}
-            </p>
-          </section>
-        )}
         {environment.loading && (
           <p className="status-note" role="status">
             {t(
@@ -289,41 +266,18 @@ export function Tanom() {
               hidden={page !== "home"}
               data-section="home"
             >
-              <ConditionCards data={data} ceb={ceb} />
-              <section
-                className="insights-control"
-                aria-label={t(
-                  "AI insights controls",
-                  "Mga kontrol sa AI insights",
-                )}
-              >
-                <button
-                  role="switch"
-                  aria-checked={insightsEnabled}
-                  onClick={() =>
-                    setEnabledPoint(insightsEnabled ? null : pointKey)
-                  }
-                >
-                  <span className="ai-switch-track" aria-hidden="true">
-                    <span />
-                  </span>
-                  {t("Enable AI insights", "I-enable ang AI insights")}
-                </button>
-                <p>
-                  {t(
-                    "For this exact point only. Coordinates and modeled data are sent to OpenRouter when you open a report tab. Not a field assessment.",
-                    "Alang lang niining eksaktong punto. Ipadala ang lokasyon ug datos sa OpenRouter kon ablihan ang report tab. Dili kini pagtimbang sa uma.",
-                  )}
-                </p>
-              </section>
               <Analysis
                 enabled={insightsEnabled}
+                onToggle={() =>
+                  setEnabledPoint(insightsEnabled ? null : pointKey)
+                }
                 active={page === "home"}
                 cache={analysisCache}
                 title={t("Current conditions", "Kondisyon karon")}
                 request={analysisRequest(point, ceb, dashboardContext(data))}
                 ceb={ceb}
               />
+              <ConditionCards data={data} ceb={ceb} />
             </div>
             <div
               className="dashboard-panel"
@@ -335,6 +289,9 @@ export function Tanom() {
                 ceb={ceb}
                 point={point}
                 insightsEnabled={insightsEnabled}
+                onToggleInsights={() =>
+                  setEnabledPoint(insightsEnabled ? null : pointKey)
+                }
                 active={page === "conditions"}
                 analysisCache={analysisCache}
               />
@@ -344,6 +301,21 @@ export function Tanom() {
               hidden={page !== "growing"}
               data-section="growing"
             >
+              <Analysis
+                enabled={insightsEnabled}
+                onToggle={() =>
+                  setEnabledPoint(insightsEnabled ? null : pointKey)
+                }
+                active={page === "growing"}
+                cache={analysisCache}
+                title={t("Climate and crops", "Klima ug tanom")}
+                request={analysisRequest(
+                  point,
+                  ceb,
+                  environmentContext(data, climate.data),
+                )}
+                ceb={ceb}
+              />
               <section
                 className="tanom-panel cropsection"
                 aria-labelledby="crop-title"
@@ -405,24 +377,31 @@ export function Tanom() {
                   )}
                 </p>
               </section>
-              <Analysis
-                enabled={insightsEnabled}
-                active={page === "growing"}
-                cache={analysisCache}
-                title={t("Climate and crops", "Klima ug tanom")}
-                request={analysisRequest(
-                  point,
-                  ceb,
-                  environmentContext(data, climate.data),
-                )}
-                ceb={ceb}
-              />
             </div>
             <div
               className="dashboard-panel"
               hidden={page !== "planning"}
               data-section="planning"
             >
+              <Analysis
+                enabled={insightsEnabled}
+                onToggle={() =>
+                  setEnabledPoint(insightsEnabled ? null : pointKey)
+                }
+                active={page === "planning"}
+                cache={analysisCache}
+                title={
+                  tab === "6"
+                    ? t("Next six months", "Sunod unom ka bulan")
+                    : t("Annual climate", "Tinuig nga klima")
+                }
+                request={analysisRequest(
+                  point,
+                  ceb,
+                  seasonalContext(season.data, tab),
+                )}
+                ceb={ceb}
+              />
               <section className="tanom-panel season">
                 <div className="section-title">
                   <div>
@@ -496,22 +475,6 @@ export function Tanom() {
                   </>
                 )}
               </section>
-              <Analysis
-                enabled={insightsEnabled}
-                active={page === "planning"}
-                cache={analysisCache}
-                title={
-                  tab === "6"
-                    ? t("Next six months", "Sunod unom ka bulan")
-                    : t("Annual climate", "Tinuig nga klima")
-                }
-                request={analysisRequest(
-                  point,
-                  ceb,
-                  seasonalContext(season.data, tab),
-                )}
-                ceb={ceb}
-              />
             </div>
             <div
               className="dashboard-panel"

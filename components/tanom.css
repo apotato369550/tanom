@@ -1528,10 +1528,10 @@
   flex: none;
 }
 .tanom .dashboard-panel > .analysis-panel {
-  margin-top: 24px;
+  margin: 0 0 24px;
 }
 .tanom .conditions-stack > .analysis-panel {
-  margin-top: 14px;
+  margin: 0 0 10px;
 }
 .tanom .seasonal-graphs {
   display: grid;
@@ -1574,18 +1574,6 @@
   line-height: 1.6;
   margin: 12px 0;
   overflow-wrap: anywhere;
-}
-.tanom .insights-control {
-  margin-top: 16px;
-}
-.tanom .insights-control p {
-  font-size: 13px;
-  line-height: 1.6;
-  margin: 10px 0 0;
-}
-.tanom .insights-control button[aria-pressed="true"] {
-  background: #e8efdc;
-  color: #25472c;
 }
 .tanom .crop-carousel {
   min-width: 0;
@@ -1644,17 +1632,6 @@
   justify-content: space-between;
   gap: 24px;
   flex-wrap: wrap;
-}
-.tanom .insights-control {
-  margin: 0;
-  max-width: 390px;
-}
-.tanom .insights-control button {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: transparent;
-  border: 0;
 }
 .tanom .ai-switch-track {
   width: 48px;
@@ -1763,14 +1740,6 @@
 .tanom button:hover {
   background: var(--tanom-soft);
 }
-.tanom .insights-control {
-  max-width: 440px;
-}
-.tanom .insights-control p {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--tanom-secondary);
-}
 .tanom .tanom-footer {
   border-top: 1px solid var(--line);
   background: #edf1e7;
@@ -1791,9 +1760,6 @@
   .tanom .condition-graph {
     padding: 16px;
   }
-  .tanom .insights-control {
-    max-width: 100%;
-  }
 }
 .tanom .planning-context {
   padding: 14px 18px;
@@ -1804,11 +1770,6 @@
 .tanom .season-tabs button[aria-pressed="true"] {
   background: var(--tanom-ink);
   color: white;
-}
-.tanom .dashboard-panel[data-section="home"] > .insights-control {
-  margin-block: 24px;
-  padding: 20px;
-  border-top: 1px solid var(--line);
 }
 .tanom .condition-card {
   border-radius: 10px;
@@ -1867,3 +1828,56 @@
 .tanom input, .tanom select { border-color:var(--tanom-control); color:var(--tanom-ink); background:var(--tanom-panel); }
 .tanom input::placeholder { color:var(--tanom-secondary); opacity:1; }
 .tanom button:disabled { opacity:1; color:var(--tanom-secondary); background:var(--tanom-soft); border-color:var(--tanom-control); }
+
+/* AI is one optional tool: activation, consent and report share a region. */
+.tanom .analysis-panel,
+.tanom .conditions-stack .analysis-panel {
+  padding: 20px;
+  border-radius: 12px;
+}
+.tanom .analysis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+}
+.tanom .analysis-header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+.tanom .analysis-panel .analysis-scope {
+  margin: 4px 0 0;
+  color: var(--tanom-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.tanom .analysis-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  font-size: 14px;
+}
+.tanom .analysis-toggle .ai-switch-track {
+  flex: none;
+}
+.tanom .analysis-panel .analysis-disclosure {
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--tanom-border);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--tanom-secondary);
+  max-width: 75ch;
+}
+@media (max-width: 760px) {
+  .tanom .analysis-panel,
+  .tanom .conditions-stack .analysis-panel {
+    padding: 16px;
+  }
+}

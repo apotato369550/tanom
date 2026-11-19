@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useId, useState } from "react";
 import type { AnalysisRequest } from "@/lib/tanom/analysis-contract";
 
 type Report = {
@@ -148,6 +148,7 @@ export function Analysis({
   active,
   cache,
   title,
+  onToggle,
 }: {
   request: AnalysisRequest | null;
   ceb: boolean;
@@ -155,7 +156,10 @@ export function Analysis({
   active: boolean;
   cache: AnalysisCache;
   title: string;
+  onToggle: () => void;
 }) {
+  const disclosureId = useId();
+  const headingId = useId();
   const key = request
     ? JSON.stringify([
         request.lat,
@@ -239,18 +243,32 @@ export function Analysis({
       )
     : 0;
   return (
-    <section className="tanom-panel analysis-panel">
-      <h2>
-        {t("AI insights", "Mga pagtuki sa AI")} · {title}
-      </h2>
-      {!enabled ? (
-        <p>
-          {t(
-            "Enable AI insights near the location controls for this point.",
-            "I-enable ang AI insights duol sa pagpili sa lokasyon alang niining punto.",
-          )}
-        </p>
-      ) : !request ? (
+    <section className="tanom-panel analysis-panel" aria-labelledby={headingId}>
+      <div className="analysis-header">
+        <div>
+          <h2 id={headingId}>{t("AI insights", "Mga pagtuki sa AI")}</h2>
+          <p className="analysis-scope">{title}</p>
+        </div>
+        <button
+          className="analysis-toggle"
+          role="switch"
+          aria-checked={enabled}
+          aria-describedby={disclosureId}
+          onClick={onToggle}
+        >
+          <span className="ai-switch-track" aria-hidden="true">
+            <span />
+          </span>
+          {t("Enable AI insights", "I-enable ang AI insights")}
+        </button>
+      </div>
+      <p className="analysis-disclosure" id={disclosureId}>
+        {t(
+          "For this exact point only. Coordinates and modeled data are sent to OpenRouter when you open a report tab. Not a field assessment.",
+          "Alang lang niining eksaktong punto. Ipadala ang lokasyon ug datos sa OpenRouter kon ablihan ang report tab. Dili kini pagtimbang sa uma.",
+        )}
+      </p>
+      {!enabled ? null : !request ? (
         <p role="status">
           {t(
             "Waiting for report data. Weather and charts remain available.",
